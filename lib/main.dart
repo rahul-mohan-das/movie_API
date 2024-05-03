@@ -36,7 +36,7 @@ class _TVShowsPageState extends State<TVShowsPage> {
         crossAxisCount: 2,
         children: List.generate(shows.length, (index) {
           return Card(
-            child: Stack(
+            child: Column(
               children: [
                 Column(
                   children: [
@@ -51,18 +51,18 @@ class _TVShowsPageState extends State<TVShowsPage> {
                     ),
                   ],
                 ),
-                //
                 ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => SecondRoute(
-                                //showId: index,
-                                )),
-                      );
-                    },
-                    child: Text("cast")),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            SecondRoute(showId: shows[index]['id']),
+                      ),
+                    );
+                  },
+                  child: Text("cast"),
+                ),
               ],
             ),
           );
@@ -72,26 +72,11 @@ class _TVShowsPageState extends State<TVShowsPage> {
   }
 }
 
-class NewScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('New Screen'),
-      ),
-      body: Center(
-          child: Column(
-              children:
-                  List.generate(_TVShowsPageState().shows.length, (index) {
-        final show = _TVShowsPageState().shows[index]["genres"][1];
-        return Text(show);
-      }))),
-    );
-  }
-}
-
 class SecondRoute extends StatefulWidget {
-  SecondRoute(/*{required this.showId}*/);
+  final int showId;
+
+  SecondRoute({required this.showId});
+
   @override
   State<SecondRoute> createState() => _SecondRouteState();
 }
@@ -106,8 +91,8 @@ class _SecondRouteState extends State<SecondRoute> {
   }
 
   Future<void> fetchShowCast() async {
-    final response =
-        await http.get(Uri.parse('https://api.tvmaze.com/shows/1/cast'));
+    final response = await http
+        .get(Uri.parse('https://api.tvmaze.com/shows/${widget.showId}/cast'));
 
     if (response.statusCode == 200) {
       setState(() {
